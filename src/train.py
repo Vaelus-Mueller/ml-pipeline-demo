@@ -108,15 +108,18 @@ def train_model(config=None):
     meets_accuracy = metrics["accuracy"] >= config.get("min_accuracy", 0)
     meets_f1 = metrics["f1_score"] >= config.get("min_f1", 0)
 
-    out_dir = os.path.join(os.path.dirname(__file__), "artifacts")
-    os.makedirs(out_dir, exist_ok=True)
+    repo_root = os.path.dirname(os.path.dirname(__file__))
+    models_dir = os.path.join(repo_root, "models")
+    metrics_dir = os.path.join(repo_root, "metrics")
+    os.makedirs(models_dir, exist_ok=True)
+    os.makedirs(metrics_dir, exist_ok=True)
 
-    metrics_path = os.path.join(out_dir, "metrics.json")
+    metrics_path = os.path.join(metrics_dir, "results.json")
     with open(metrics_path, "w") as fh:
         json.dump(metrics, fh, indent=2)
 
     if meets_accuracy and meets_f1:
-        model_path = os.path.join(out_dir, "model.pkl")
+        model_path = os.path.join(models_dir, "model.pkl")
         with open(model_path, "wb") as fh:
             pickle.dump(model, fh)
         print(f"Saved model to {model_path}")
